@@ -13,14 +13,6 @@ application {
     executableDir = ""
 }
 
-distributions {
-    main {
-        contents {
-            from("config.yml")
-        }
-    }
-}
-
 repositories {
     mavenCentral()
     maven { url = uri("https://jitpack.io") }
