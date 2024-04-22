@@ -4,6 +4,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import ru.vtb.szkf.oleg.prodsky.configuration.Configuration
 import ru.vtb.szkf.oleg.prodsky.domain.Attendant
 import ru.vtb.szkf.oleg.prodsky.domain.AttendantTable
+import ru.vtb.szkf.oleg.prodsky.extensions.domain.countByChatId
 import ru.vtb.szkf.oleg.prodsky.extensions.domain.existsByUsernameAndChatId
 import ru.vtb.szkf.oleg.prodsky.extensions.domain.findAllByChatId
 import ru.vtb.szkf.oleg.prodsky.extensions.domain.findByUsernameAndChatId
@@ -75,7 +76,7 @@ object AttendantService {
             "$attendantUsername и так уже в списке. Хотите лишнюю смену докинуть?"
         }
 
-        val attendantCount = Attendant.count()
+        val attendantCount = Attendant.countByChatId(chatId)
 
         Attendant.new {
             this.username = attendantUsername
