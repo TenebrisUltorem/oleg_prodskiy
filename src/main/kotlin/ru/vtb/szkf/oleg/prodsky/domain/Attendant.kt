@@ -8,9 +8,13 @@ import org.jetbrains.exposed.dao.id.IntIdTable
 private const val USERNAME_LENGTH = 32
 
 object AttendantTable: IntIdTable("attendants") {
-    val username = varchar("username", USERNAME_LENGTH).uniqueIndex()
+    val username = varchar("username", USERNAME_LENGTH)
     val isAttendant = bool("is_attendant")
     val chatId = long("chat_id")
+
+    init {
+        uniqueIndex(username, chatId)
+    }
 }
 
 class Attendant(id: EntityID<Int>): IntEntity(id) {
