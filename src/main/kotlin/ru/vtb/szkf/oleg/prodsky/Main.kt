@@ -17,9 +17,7 @@ import ru.vtb.szkf.oleg.prodsky.handler.HelpCommandHandler
 import ru.vtb.szkf.oleg.prodsky.handler.MessageHandler
 import ru.vtb.szkf.oleg.prodsky.handler.AttendantJobCommandHandler
 import ru.vtb.szkf.oleg.prodsky.service.AttendantJobService
-import java.io.File
 import java.net.URL
-import kotlin.system.exitProcess
 
 private object Main
 private val log = LoggerFactory.getLogger(Main::class.java)
@@ -41,16 +39,6 @@ val BOT = bot {
 }
 
 fun main() {
-    ///Load default config
-    val config = File("config.yml")
-
-    if (!config.exists()) {
-        config.createNewFile()
-        config.writeText(getResource("defaultConfig.yml").readText())
-
-        log.info("Отсутствует файл конфигурации config.yml. Заполните файл и перезапустите приложение")
-        exitProcess(0)
-    }
     // Configure database
     Database.connect(
         url = "jdbc:sqlite:./data.db",
