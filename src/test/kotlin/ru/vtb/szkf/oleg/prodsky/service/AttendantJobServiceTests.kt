@@ -6,6 +6,7 @@ import ru.vtb.szkf.oleg.prodsky.domain.AttendantJob
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 object AttendantJobServiceTests: AbstractTests() {
@@ -24,6 +25,16 @@ object AttendantJobServiceTests: AbstractTests() {
         val isJobLaunched = AttendantJobService.launchNewAttendantJobForChat(testChatId)
 
         assertFalse(isJobLaunched)
+    }
+
+    @Test
+    fun shouldSuccessfullyStopJob() = transaction {
+        AttendantJobService.launchNewAttendantJobForChat(testChatId)
+
+        val isJobStopped = AttendantJobService.stopAttendantJobForChat(testChatId)
+
+        assertTrue(isJobStopped)
+        assertNull(AttendantJob.findById(testChatId))
     }
 
 }

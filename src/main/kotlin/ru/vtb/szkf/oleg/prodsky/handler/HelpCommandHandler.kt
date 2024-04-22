@@ -18,7 +18,9 @@ object HelpCommandHandler {
             /getAttendant - Узнать имя сегодняшнего дежурящего
             /attendantList - Получить список всех дежурных
             /deleteAttendant <@ИмяНеудачника> - Удалить дежурного из списка (скажем, на время отпуска)
+            
             /start Запуск джобы для уведолмения о сегодняшнем дежурстве
+            /stop Остановка джобы для уведомления о сегодняшнем дежурстве
     """.trimIndent()
 
     val handleHelpCommand: suspend CommandHandlerEnvironment.() -> Unit = {
