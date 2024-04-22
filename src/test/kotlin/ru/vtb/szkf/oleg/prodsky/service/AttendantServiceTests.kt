@@ -28,7 +28,7 @@ object AttendantServiceTests: AbstractTests() {
     private const val NO_USERNAME_FOR_ADDING = "Кого добавлять то?"
     private const val NO_USERNAME_FOR_DELETING = "Кого удалять то?"
     private const val NO_ATTENDANTS_FOUND = "А дежурить то и некому..."
-    private const val VACATION = "Выходной, отыхаем"
+    private const val VACATION = "А сегодня выходной, отыхаем"
 
     @Test
     fun shouldSuccessfullyAddFirstAttendant() = transaction {

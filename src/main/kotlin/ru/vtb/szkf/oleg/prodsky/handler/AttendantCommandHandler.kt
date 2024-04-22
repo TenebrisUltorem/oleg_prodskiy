@@ -27,9 +27,10 @@ object AttendantCommandHandler {
     }
 
     val handleGetAttendantListCommand: suspend CommandHandlerEnvironment.() -> Unit = {
-        log.debug("Получена команда на получение списка дежурных")
-
         val chatId = ChatId.fromId(message.chat.id)
+
+        log.debug("Получена команда на получение списка дежурных чатика '{}'", chatId)
+
         try {
             bot.sendMessage(chatId, text = AttendantService.getAttendantList(message.chat.id))
         }
@@ -43,9 +44,11 @@ object AttendantCommandHandler {
     }
 
     val handleAddAttendantCommand: suspend CommandHandlerEnvironment.() -> Unit = {
-        log.debug("Получена команда на добавление нового дежурного с аргументами {}", args)
-
         val chatId = ChatId.fromId(message.chat.id)
+        log.debug("Получена команда на добавление нового дежурного с аргументами '{}' для чатика '{}'",
+            args, chatId
+        )
+
         try {
             bot.sendMessage(chatId, text = AttendantService.addAttendant(args.firstOrNull(), message.chat.id))
         }
@@ -66,9 +69,11 @@ object AttendantCommandHandler {
     }
 
     val handleDeleteAttendantCommand: suspend CommandHandlerEnvironment.() -> Unit = {
-        log.debug("Получена команда на удаление дежурного с аргументами {}", args)
-
         val chatId = ChatId.fromId(message.chat.id)
+
+        log.debug("Получена команда на удаление дежурного с аргументами '{}' для чатика '{}'",
+            args, chatId)
+
         try {
             bot.sendMessage(chatId, text = AttendantService.deleteAttendant(args.firstOrNull(), message.chat.id))
         }

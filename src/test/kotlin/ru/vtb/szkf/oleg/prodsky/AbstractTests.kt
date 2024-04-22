@@ -6,6 +6,7 @@ import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.deleteAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.junit.jupiter.api.AfterAll
+import ru.vtb.szkf.oleg.prodsky.domain.AttendantJobTable
 import ru.vtb.szkf.oleg.prodsky.domain.AttendantTable
 import ru.vtb.szkf.oleg.prodsky.integration.ProductionCalendarWebClient
 import java.io.File
@@ -18,14 +19,17 @@ abstract class AbstractTests {
 
     init {
         Database.connect("jdbc:sqlite:./test_data.db", "org.sqlite.JDBC")
-        transaction { SchemaUtils.create(AttendantTable) }
+        transaction { SchemaUtils.create(AttendantTable, AttendantJobTable) }
 
         mockkObject(ProductionCalendarWebClient)
     }
 
     @BeforeTest
     fun beforeTest() {
-        transaction { AttendantTable.deleteAll() }
+        transaction {
+            AttendantTable.deleteAll()
+            AttendantJobTable.deleteAll()
+        }
     }
 
     companion object {

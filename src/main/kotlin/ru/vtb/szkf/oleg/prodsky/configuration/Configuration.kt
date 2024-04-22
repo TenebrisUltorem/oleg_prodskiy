@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 import ru.vtb.szkf.oleg.prodsky.extensions.logger
 import java.io.FileInputStream
 
-data object Configuration {
+object Configuration {
     @Serializable
     private data class ConfigurationData(
         val token: String,

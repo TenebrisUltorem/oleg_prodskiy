@@ -4,7 +4,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import ru.vtb.szkf.oleg.prodsky.configuration.Configuration
 import ru.vtb.szkf.oleg.prodsky.domain.Attendant
 import ru.vtb.szkf.oleg.prodsky.domain.AttendantTable
-import ru.vtb.szkf.oleg.prodsky.extensions.domain.existsByUsername
+import ru.vtb.szkf.oleg.prodsky.extensions.domain.existsByUsernameAndChatId
 import ru.vtb.szkf.oleg.prodsky.extensions.domain.findAllByChatId
 import ru.vtb.szkf.oleg.prodsky.extensions.domain.findByUsernameAndChatId
 import ru.vtb.szkf.oleg.prodsky.extensions.domain.findCurrentAttendantByChatId
@@ -71,7 +71,7 @@ object AttendantService {
         require(attendantUsername.startsWith("@")) { "$attendantUsername - это кто вообще?" }
 
 
-        require(!Attendant.existsByUsername(attendantUsername)) {
+        require(!Attendant.existsByUsernameAndChatId(attendantUsername, chatId)) {
             "$attendantUsername и так уже в списке. Хотите лишнюю смену докинуть?"
         }
 
