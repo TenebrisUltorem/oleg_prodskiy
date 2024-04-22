@@ -18,3 +18,5 @@ fun Attendant.Companion.findByUsernameAndChatId(username: String, chatId: Long) 
 
 fun Attendant.Companion.existsByUsernameAndChatId(username: String, chatId: Long) = Attendant
     .count((AttendantTable.username eq username) and (AttendantTable.chatId eq chatId)) != 0L
+
+fun Attendant.Companion.countByChatId(chatId: Long) = Attendant.count(AttendantTable.chatId eq chatId)
