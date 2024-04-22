@@ -33,4 +33,26 @@ object AttendantJobCommandHandler {
         }
     }
 
+    val handleStopCommand: suspend CommandHandlerEnvironment.() -> Unit = {
+        val chatId = ChatId.fromId(message.chat.id)
+        try {
+            if (AttendantJobService.stopAttendantJobForChat(message.chat.id)) {
+                log.info("Остановлена джоба по ежеCRONной смене дежурного для чатика {}", chatId)
+                bot.sendMessage(chatId, text = "Прод остался без дежурных. Стыдно должно быть")
+            }
+            else {
+                bot.sendMessage(chatId, text = "Нечего останавливать")
+                log.warn("Отсутствует джоба по смене дежурного для чатика '{}'", chatId)
+            }
+        }
+        catch (e: Throwable) {
+            log.error("Во время запуска джобы по ежеCRONной смене дежурного для чатика '{}' произошла ошибка",
+                chatId, e)
+            bot.sendMessage(chatId, text = "Ошибочка вышла. Ну, если что-то поймете, то вот: $e")
+        }
+        finally {
+            update.consume()
+        }
+    }
+
 }

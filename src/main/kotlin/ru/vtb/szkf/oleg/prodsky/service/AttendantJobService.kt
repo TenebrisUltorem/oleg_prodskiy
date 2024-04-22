@@ -37,7 +37,6 @@ object AttendantJobService {
      * @return true - джоба успешно запущена, false - нет
      */
     fun launchNewAttendantJobForChat(chatId: Long): Boolean = transaction {
-        println(jobs.size)
         if (AttendantJob.existsByChatId(chatId)) {
             log.warn("Джоба по смене дежурного в чатике '{}' уже запущена", chatId)
             return@transaction false
@@ -45,6 +44,18 @@ object AttendantJobService {
 
         AttendantJob.new { this.chatId = chatId }
         jobs[chatId] = launchJob(chatId)
+
+        return@transaction true
+    }
+
+    fun stopAttendantJobForChat(chatId: Long): Boolean = transaction {
+        if (!AttendantJob.existsByChatId(chatId)) {
+            log.warn("Отсутствует джоба по смене дежурного в чатике '{}'", chatId)
+            return@transaction false
+        }
+
+        AttendantJob.findById(chatId)?.delete()
+        jobs.remove(chatId)
 
         return@transaction true
     }

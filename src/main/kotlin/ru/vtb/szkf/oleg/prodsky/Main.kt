@@ -28,6 +28,7 @@ val BOT = bot {
     token = Configuration.token
     dispatch {
         command("start", AttendantJobCommandHandler.handleStartCommand)
+        command("stop", AttendantJobCommandHandler.handleStopCommand)
         command("help", HelpCommandHandler.handleHelpCommand)
 
         command("attendantList", AttendantCommandHandler.handleGetAttendantListCommand)
