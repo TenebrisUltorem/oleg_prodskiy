@@ -1,7 +1,6 @@
 package ru.vtb.szkf.oleg.prodsky.service
 
 import io.mockk.every
-import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.assertThrows
@@ -9,6 +8,7 @@ import ru.vtb.szkf.oleg.prodsky.AbstractTests
 import ru.vtb.szkf.oleg.prodsky.configuration.Configuration
 import ru.vtb.szkf.oleg.prodsky.domain.Attendant
 import ru.vtb.szkf.oleg.prodsky.domain.AttendantTable
+import ru.vtb.szkf.oleg.prodsky.extensions.domain.findByUsernameAndChatId
 import ru.vtb.szkf.oleg.prodsky.integration.ProductionCalendarWebClient
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -122,7 +122,7 @@ object AttendantServiceTests: AbstractTests() {
         val resultMessage = AttendantService.deleteAttendant("@Vitaliy", testChatId)
         assertEquals("@Vitaliy больше не дежурит\n@testUser, принимай смену дежурства", resultMessage)
 
-        assertTrue(Attendant.find { AttendantTable.username eq VALID_ATTENDANT_USERNAME }.firstOrNull()!!.isAttendant)
+        assertTrue(Attendant.findByUsernameAndChatId(VALID_ATTENDANT_USERNAME, testChatId)!!.isAttendant)
     }
 
     @Test
@@ -166,15 +166,27 @@ object AttendantServiceTests: AbstractTests() {
 
         val responseMessage = AttendantService.switchAttendant(testChatId)
 
-        val testAttendant = Attendant
-            .find { (AttendantTable.username eq VALID_ATTENDANT_USERNAME) and (AttendantTable.chatId eq testChatId) }
-            .first()
-
-        val prevAttendant = Attendant
-            .find { (AttendantTable.username eq "@Vitaliy") and (AttendantTable.chatId eq testChatId) }
-            .first()
+        val testAttendant = Attendant.findByUsernameAndChatId(VALID_ATTENDANT_USERNAME, testChatId)!!
+        val prevAttendant = Attendant.findByUsernameAndChatId("@Vitaliy", testChatId)!!
 
         assertEquals("@testUser, принимай смену дежурства", responseMessage)
+        assertTrue(testAttendant.isAttendant)
+        assertFalse(prevAttendant.isAttendant)
+    }
+
+    @Test
+    fun shouldSuccessfullySwitchLastAttendant() = transaction {
+        every { ProductionCalendarWebClient.isTodayAVacation() } returns false
+
+        Attendant.new { username = "@Vitaliy"; isAttendant = false; chatId = testChatId }
+        Attendant.new { username = VALID_ATTENDANT_USERNAME; isAttendant = true; chatId = testChatId }
+
+        val responseMessage = AttendantService.switchAttendant(testChatId)
+
+        val testAttendant = Attendant.findByUsernameAndChatId("@Vitaliy", testChatId)!!
+        val prevAttendant = Attendant.findByUsernameAndChatId(VALID_ATTENDANT_USERNAME, testChatId)!!
+
+        assertEquals("@Vitaliy, принимай смену дежурства", responseMessage)
         assertTrue(testAttendant.isAttendant)
         assertFalse(prevAttendant.isAttendant)
     }
