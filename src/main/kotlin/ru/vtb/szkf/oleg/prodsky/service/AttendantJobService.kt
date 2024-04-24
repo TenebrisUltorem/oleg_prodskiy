@@ -62,8 +62,17 @@ object AttendantJobService {
 
     private fun launchJob(chatId: Long) = CoroutineScope(Dispatchers.Default).launch {
         kronScheduler.doInfinity {
-            val response = AttendantService.switchAttendant(chatId)
-            if (response != null) BOT.sendMessage(ChatId.fromId(chatId), response)
+            try {
+                val response = AttendantService.switchAttendant(chatId)
+                if (response != null) BOT.sendMessage(ChatId.fromId(chatId), response)
+            }
+            catch (e: Throwable) {
+                log.error("Во время переключения дежурного произошла ошибка", e)
+                BOT.sendMessage(
+                    chatId = ChatId.fromId(chatId),
+                    text = "Ошибочка вышла при переключении дежурного. Вот, наслаждайтесь: $e:${e.stackTraceToString()}"
+                )
+            }
         }
     }
 

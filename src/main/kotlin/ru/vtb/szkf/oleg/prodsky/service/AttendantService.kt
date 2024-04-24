@@ -144,8 +144,10 @@ object AttendantService {
         val prevAttendant = Attendant.findCurrentAttendantByChatId(chatId) ?: run {
             return@transaction NO_ATTENDANTS_FOUND
         }
+        log.debug("Предыдущий дежурный: '{}'", prevAttendant.username)
 
         val nextAttendant = findNextAttendant(prevAttendant)
+        log.debug("Следующий дежурный: '{}'", nextAttendant.username)
 
         return@transaction if (nextAttendant.username == prevAttendant.username)
             "${nextAttendant.username}, ты один, так что дежурь дальше"
@@ -153,8 +155,9 @@ object AttendantService {
             nextAttendant.isAttendant = true
             prevAttendant.isAttendant = false
 
+            log.info("Дежурным по проду назначен '{}'", nextAttendant.username)
             "${nextAttendant.username}, принимай смену дежурства"
-        }.also { log.debug("Дежурным по проду назначен '{}'", nextAttendant.username) }
+        }
     }
 
 
