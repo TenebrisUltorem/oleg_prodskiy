@@ -3,7 +3,6 @@ package ru.vtb.szkf.oleg.prodsky.service
 import org.jetbrains.exposed.sql.transactions.transaction
 import ru.vtb.szkf.oleg.prodsky.configuration.Configuration
 import ru.vtb.szkf.oleg.prodsky.domain.Attendant
-import ru.vtb.szkf.oleg.prodsky.domain.AttendantTable
 import ru.vtb.szkf.oleg.prodsky.extensions.domain.countByChatId
 import ru.vtb.szkf.oleg.prodsky.extensions.domain.existsByUsernameAndChatId
 import ru.vtb.szkf.oleg.prodsky.extensions.domain.findAllByChatId
@@ -140,7 +139,7 @@ object AttendantService {
             return@transaction null
         }
 
-        if (Attendant.find { AttendantTable.chatId eq chatId }.empty()) return@transaction "А дежурить то и некому..."
+        if (Attendant.findAllByChatId(chatId).isEmpty()) return@transaction NO_ATTENDANTS_FOUND
 
         val prevAttendant = Attendant.findCurrentAttendantByChatId(chatId) ?: run {
             return@transaction NO_ATTENDANTS_FOUND
