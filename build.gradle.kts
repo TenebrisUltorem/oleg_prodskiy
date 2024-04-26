@@ -1,5 +1,4 @@
 plugins {
-    application
     kotlin("jvm") version "1.9.22"
     kotlin("plugin.serialization") version "1.9.23"
     id("io.gitlab.arturbosch.detekt") version "1.23.5"
@@ -7,11 +6,6 @@ plugins {
 
 group = "ru.vtb.szkf"
 version = "1.0-SNAPSHOT"
-
-application {
-    mainClass = "ru.vtb.szkf.oleg.prodsky.MainKt"
-    executableDir = ""
-}
 
 repositories {
     mavenCentral()
@@ -52,6 +46,23 @@ dependencies {
 tasks.test {
     useJUnitPlatform()
 }
+
+tasks.jar {
+    manifest.attributes["Main-Class"] = "ru.vtb.szkf.oleg.prodsky.MainKt"
+    val dependencies = configurations
+        .runtimeClasspath
+        .get()
+        .map { zipTree(it) }
+    from(dependencies)
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+tasks.register<JavaExec>("run") {
+    group = "application"
+    mainClass = "ru.vtb.szkf.oleg.prodsky.MainKt"
+    classpath = sourceSets.main.get().runtimeClasspath
+}
+
 kotlin {
     jvmToolchain(17)
 }

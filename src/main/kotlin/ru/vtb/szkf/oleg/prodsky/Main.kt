@@ -5,7 +5,6 @@ import com.github.kotlintelegrambot.dispatch
 import com.github.kotlintelegrambot.dispatcher.command
 import com.github.kotlintelegrambot.dispatcher.text
 import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.DatabaseConfig
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.LoggerFactory
@@ -43,9 +42,6 @@ fun main() {
     Database.connect(
         url = "jdbc:sqlite:./data.db",
         driver = "org.sqlite.JDBC",
-        databaseConfig = DatabaseConfig.invoke {
-            maxEntitiesToStoreInCachePerEntity = 0
-        }
     )
     transaction { SchemaUtils.create(AttendantTable, AttendantJobTable) }
 

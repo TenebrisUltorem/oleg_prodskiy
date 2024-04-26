@@ -6,6 +6,7 @@ import com.charleskorn.kaml.parseToYamlNode
 import com.charleskorn.kaml.yamlMap
 import com.charleskorn.kaml.yamlScalar
 import ru.vtb.szkf.oleg.prodsky.extensions.logger
+import ru.vtb.szkf.oleg.prodsky.extensions.toMaskedString
 import ru.vtb.szkf.oleg.prodsky.getResource
 import java.io.File
 import java.io.FileInputStream
@@ -49,7 +50,7 @@ data object Configuration {
         }
 
         log.info("Loaded configuration: {}", mapOf(
-            "token" to token,
+            "token" to token.toMaskedString(),
             "botNames" to botNames,
             "switchAttendantCron" to switchAttendantCron
         ))
